@@ -12,17 +12,26 @@ phases:
   pre_build:
     commands:
       - pip install --target ./package requests
+    finally:
+      - echo This always runs even if the login command fails
+  build:
+    commands:
       - cd package
       - zip -r ../${ENV_PREFIX}-lambda-package.zip .
       - cd ..
       - zip -g ${ENV_PREFIX}-lambda-package.zip ./*.py
     finally:
-      - echo This always runs even if the login command fails
-  build:
-    commands:
-      - echo Entered the build phase...
-    finally:
       - echo This always runs even if the install command fails
   post_build:
     commands:
-      - echo Entered the post_build phase...
+      # insert the terraform secret
+      - sed -i 's/[${TOKEN}]/'${tf_token}'/' LambdaDeploy.tf
+
+      # insert the environment ENV_PREFIX
+      - sed -i 's/[${PREFIX}]/'${ENV_PREFIX}'/g' LambdaDeploy.tf
+
+      # insert the package file
+      - sed -i 's/[${PACKAGE}]/'${ENV_PREFIX}'-lambda-package.zip/g' LambdaDeploy.tf
+
+      # Run the terraform
+      - terraform plan
