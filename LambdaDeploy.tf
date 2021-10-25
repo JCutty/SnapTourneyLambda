@@ -1,8 +1,3 @@
-# credentials
-credentials "app.terraform.io" {
-  token = "${TOKEN}"
-}
-
 # workspace
 terraform {
   backend "remote" {

@@ -25,7 +25,8 @@ phases:
   post_build:
     commands:
       # insert the terraform secret
-      - sed -i 's/[$]{TOKEN}/'${tf_token}'/' LambdaDeploy.tf
+      - sed -i 's/[$]{TOKEN}/'${tf_token}'/' creds.tf
+      - mv creds.tf ~/.terraformrc
 
       # insert the environment ENV_PREFIX
       - sed -i 's/[$]{PREFIX}/'${ENV_PREFIX}'/g' LambdaDeploy.tf
@@ -35,5 +36,6 @@ phases:
       
       # DEBUG
       - head -n 50 LambdaDeploy.tf
+      
       # Run the terraform
       - terraform plan
