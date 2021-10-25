@@ -36,6 +36,7 @@ phases:
       
       # DEBUG
       - head -n 50 LambdaDeploy.tf
-      
+
       # Run the terraform
+      - terraform init
       - terraform plan
