@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      # install terraform binary
+      # install terraform
       - curl -s -qL -o terraform_install.zip https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
       - unzip terraform_install.zip -d /usr/bin/
       - chmod +x /usr/bin/terraform
@@ -11,18 +11,16 @@ phases:
       - terraform --version
   pre_build:
     commands:
+      # get all the dependencies
       - pip install --target ./package requests
-    finally:
-      - echo This always runs even if the login command fails
-  build:
-    commands:
+
+      # create the lambda package
       - cd package
       - zip -r ../${ENV_PREFIX}-lambda-package.zip .
       - cd ..
       - zip -g ${ENV_PREFIX}-lambda-package.zip ./*.py
     finally:
-      - echo This always runs even if the install command fails
-  post_build:
+  build:
     commands:
       # insert the terraform secret
       - sed -i 's/[$]{TOKEN}/'${tf_token}'/' creds.tf
@@ -31,9 +29,13 @@ phases:
       # insert the environment ENV_PREFIX
       - sed -i 's/[$]{PREFIX}/'${ENV_PREFIX}'/g' LambdaDeploy.tf
 
-      # insert the package file
+      # insert the package filename
       - sed -i 's/[$]{PACKAGE}/'${ENV_PREFIX}'-lambda-package.zip/g' LambdaDeploy.tf
 
       # Run the terraform
       - terraform init
-      - terraform plan
+      - terraform apply
+    finally:
+  post_build:
+    commands:
+      - echo nothing in post_build

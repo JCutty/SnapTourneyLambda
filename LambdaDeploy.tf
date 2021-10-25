@@ -4,7 +4,7 @@ terraform {
     organization = "SnapTourney"
 
     workspaces {
-      name = "${PREFIX}SnapTourneyServices"
+      name = "${PREFIX}SnapTourneyServices" # the workspace has to have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY , and AWS_DEFAULT_REGION defined
     }
   }
   required_providers {
