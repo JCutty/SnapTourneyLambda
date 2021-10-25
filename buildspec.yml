@@ -25,13 +25,13 @@ phases:
   post_build:
     commands:
       # insert the terraform secret
-      - sed -i 's/[${TOKEN}]/'${tf_token}'/' LambdaDeploy.tf
+      - sed -i 's/[$]{TOKEN}/'${tf_token}'/' LambdaDeploy.tf
 
       # insert the environment ENV_PREFIX
-      - sed -i 's/[${PREFIX}]/'${ENV_PREFIX}'/g' LambdaDeploy.tf
+      - sed -i 's/[$]{PREFIX}/'${ENV_PREFIX}'/g' LambdaDeploy.tf
 
       # insert the package file
-      - sed -i 's/[${PACKAGE}]/'${ENV_PREFIX}'-lambda-package.zip/g' LambdaDeploy.tf
+      - sed -i 's/[$]{PACKAGE}/'${ENV_PREFIX}'-lambda-package.zip/g' LambdaDeploy.tf
       
       # DEBUG
       - head -n 50 LambdaDeploy.tf
